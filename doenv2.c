@@ -18,8 +18,8 @@ int main(int argc, char *argv[]){
 
 	printf("Total args: %d\n", argc);
 	if (argc == 1) {
-		printf("%s\n", getenv("env"));
-		//show_all();
+		//printf("%s\n", getenv("env"));
+		show_all();
 		printf("No arguments given\n");
 		return EXIT_SUCCESS;
 	}	

@@ -7,7 +7,8 @@
 static void print_usage();
 static void senv(char *a, char *b);
 static void update_env(char **args, int argc);
-static void  show_all();
+static void allocate_env(char **args, int argc);
+static void show_all();
 static *program_name;
 
 int main(int argc, char *argv[]){
@@ -17,12 +18,13 @@ int main(int argc, char *argv[]){
 	char *args;
 
 	printf("Total args: %d\n", argc);
-	if (argc == 1) {
+
+	/*if (argc <= 1) {
 		//printf("%s\n", getenv("env"));
 		show_all();
 		printf("No arguments given\n");
 		return EXIT_SUCCESS;
-	}	
+	}*/	
 
 	while (true) {
 		int c = getopt(argc, argv, "hi:");
@@ -40,28 +42,12 @@ int main(int argc, char *argv[]){
 		}
 	}
 
-	//args = argv[strlen(argv)];
-
 	for (i; i < strlen(argv); i++) {
 		if (system(argv[i]) == -1) {
 		perror("Error=");
 		}
 	}	
-	//senv("TEST", "ABC");	
-	/*if (setenv("TEST", "abc", 1) == -1) {
-		perror("Failed to set TEST to abc\n");
-		exit(1);
-	}*/
 
-	//printf("%s\n", getenv("TEST"));
-
-	/*int m = system("./doenv");
-	printf("%d\n", m);
-	if (m == -1) {
-		perror("ERROR\n");
-		exit(1);
-	}
-	*/
 	return EXIT_SUCCESS;	
 }
 
@@ -86,6 +72,29 @@ void update_env(char **args, int argc) {
 			putenv(args[optind]);
 	}
 	printf("Modified Environment\n");
+	show_all();
+}
+
+void allocate_env(char **args, int argc) {
+	char **newptr, *str;
+	int bal = 0;
+	int i = 0;
+	char **p;
+	extern char **environ;
+	for (p = environ; *p != NULL; p++) {
+		bal++;
+	}
+	bal += argc - optind + 1;
+	*newptr = (char*)malloc(2*bal);
+	str = optarg;
+	newptr[i] = str;
+	if (optind < argc) {
+		for (i = 1; optind<argc; optind++, i++) {
+			newptr[i] = args[i];
+		}
+	}
+	environ = newptr;
+	printf("Environment overwrite complete succesfully");
 	show_all();
 }
 

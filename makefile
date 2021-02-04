@@ -1,8 +1,8 @@
 CC = gcc
 CFLAGS = -Wall -g
 
-EXE = doenv
-OBJ = doenv.o
+EXE = doenv2
+OBJ = doenv2.o
 OUT = $(EXE)
 
 .SUFFIXES: .c .o
