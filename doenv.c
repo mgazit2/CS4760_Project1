@@ -18,8 +18,8 @@ int main(int argc, char *argv[]){
 
 	printf("Total args: %d\n", argc);
 	if (argc == 1) {
-		printf("%s\n", getenv("env"));
-		//show_all();
+		//printf("%s\n", getenv("env"));
+		show_all();
 		printf("No arguments given\n");
 		return EXIT_SUCCESS;
 	}	
@@ -93,7 +93,7 @@ void show_all() {
 	char **p;
 	system("clear");
 	extern char **environ;
-	printf("Environment Variables");
+	printf("Environment Variables\n");
 	for (p  = environ; *p != NULL; p++)
 		printf("%s\n", *p);
 }

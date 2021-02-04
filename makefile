@@ -17,4 +17,4 @@ $(EXE): $(OBJ)
 	$(CC) $(CFLAGS) -c $<
 
 clean:
-	/bin/rm -f $(OUT) *.o
+	/bin/rm -f *.o
