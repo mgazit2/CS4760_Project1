@@ -8,15 +8,17 @@ static void print_usage();
 static void senv(char *a, char *b);
 static void update_env(char **args, int argc);
 static void  show_all();
+static void allocate_env(char **args, int argc);
+
 static *program_name;
 
 int main(int argc, char *argv[]){
-	
+	setvbuf(stdout, NULL, _IONBF, 0);	
+
 	program_name = argv[0];
 	int i = 0;
 	char *args;
 
-	printf("Total args: %d\n", argc);
 	if (argc == 1) {
 		//printf("%s\n", getenv("env"));
 		show_all();
@@ -30,9 +32,10 @@ int main(int argc, char *argv[]){
 		switch (c) {
 			case 'h':
 				print_usage();
+				return EXIT_SUCCESS;
 				break;
 			case 'i':
-				update_env(argv, argc);
+				allocate_env(argv, argc);
 				break;
 			default:
 				printf("ERROR\n");
@@ -40,11 +43,11 @@ int main(int argc, char *argv[]){
 		}
 	}
 
-	//args = argv[strlen(argv)];
-
-	for (i; i < strlen(argv); i++) {
+	//allocate_env(argv, argc);
+	
+	for (i=1; i < strlen(argv); i++) {
 		if (system(argv[i]) == -1) {
-		perror("Error=");
+		//perror("Error=");
 		}
 	}	
 	//senv("TEST", "ABC");	
@@ -90,10 +93,39 @@ void update_env(char **args, int argc) {
 }
 
 void show_all() {
+	int i;
 	char **p;
-	system("clear");
+	//system("clear");
 	extern char **environ;
-	printf("Environment Variables");
+	//printf("Environment Variables\n");
 	for (p  = environ; *p != NULL; p++)
 		printf("%s\n", *p);
+	printf("FINISHED WITH SHOW_ALL\n\n");
+}
+
+void allocate_env(char **args, int argc) {
+	char **a;
+	//char *str;
+	int bal = 0;
+	int i = 0;
+	char **p;
+	extern char **environ;
+	for (p = environ; *p != NULL; p++)
+		bal++;
+	bal += argc - optind + 1;
+	char **newptr = (char*)malloc(2*bal);
+	//str = optarg;
+	//newptr[i] = str;
+	//printf("%d is\n and %d is \n", optind, argc); DEBUG STATEMENT
+	for (i = 2; i < argc; i++) { // removed optind++
+		newptr[i-2] = args[i];
+		//printf("Current index of newptr is set to: %s\n", newptr[i-2]);
+	}	
+	/*for (a = newptr; *a != NULL; a++) {
+		printf("IN A LOOP\n");
+		printf("%s\n", *a);
+	} MEANT TO DEBUG ALLOCATE_ENV() */
+	environ = newptr;
+	printf("FINISHED WITH ALLOCATE_ENV()\n");
+	show_all();
 }
