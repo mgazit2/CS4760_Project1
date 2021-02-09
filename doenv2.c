@@ -5,12 +5,11 @@
 #include <stdbool.h>
 
 static void print_usage();
-static void senv(char *a, char *b);
 static void update_env(char **args, int argc);
 static void  show_all();
 static void allocate_env(char **args, int argc);
 
-static *program_name;
+static char* program_name;
 
 int main(int argc, char *argv[]){
 	setvbuf(stdout, NULL, _IONBF, 0);	
@@ -18,6 +17,7 @@ int main(int argc, char *argv[]){
 	program_name = argv[0];
 	int i = 0;
 	char *args;
+	bool check = true;
 
 	if (argc == 1) {
 		//printf("%s\n", getenv("env"));
@@ -25,45 +25,34 @@ int main(int argc, char *argv[]){
 		printf("No arguments given\n");
 		return EXIT_SUCCESS;
 	}	
-
-	while (true) {
-		int c = getopt(argc, argv, "hi:");
-		if (c == -1) break;
-		switch (c) {
+	
+	while (check) {
+		int d = getopt(argc, argv, "hi:");
+		if (d == -1) {
+			update_env(argv, argc);
+			break;
+		}
+		switch (d) {
 			case 'h':
 				print_usage();
 				return EXIT_SUCCESS;
 				break;
 			case 'i':
 				allocate_env(argv, argc);
+				check = false;
 				break;
 			default:
 				printf("ERROR\n");
 				break;
 		}
 	}
-
-	//allocate_env(argv, argc);
 	
-	for (i=1; i < strlen(argv); i++) {
+	for (i = 1; i < argc; i++) {
 		if (system(argv[i]) == -1) {
-		//perror("Error=");
+			continue;
 		}
-	}	
-	//senv("TEST", "ABC");	
-	/*if (setenv("TEST", "abc", 1) == -1) {
-		perror("Failed to set TEST to abc\n");
-		exit(1);
-	}*/
-
-	//printf("%s\n", getenv("TEST"));
-
-	/*int m = system("./doenv");
-	printf("%d\n", m);
-	if (m == -1) {
-		perror("ERROR\n");
-		exit(1);
-	}
+	}		
+	/*
 	*/
 	return EXIT_SUCCESS;	
 }
@@ -74,26 +63,21 @@ void print_usage() {
 	printf("doenv [-i] [var1=value] [var2=value] [...] {command 1 [; command2] [; ...]}\n");
 }
 
-void senv(char *a, char *b) {
-	if (setenv(a, b, 1) == -1) {
-		perror("ERROR\n");
-		exit(1);
-	}
-}
-
 void update_env(char **args, int argc) {
-	char *arg = optarg;
-	putenv(arg);
+	printf("In update_env\n");
+	char **p;
 	if (optind < argc) {
-		for (;optind<argc;optind++)
-			putenv(args[optind]);
+		for (p = args; *p != NULL; p++){
+			if (strchr(*p, '=') == NULL)
+				continue;
+			putenv(*p);
+		}
 	}
 	printf("Modified Environment\n");
 	show_all();
 }
 
 void show_all() {
-	int i;
 	char **p;
 	//system("clear");
 	extern char **environ;
@@ -105,7 +89,6 @@ void show_all() {
 
 void allocate_env(char **args, int argc) {
 	char **a;
-	//char *str;
 	int bal = 0;
 	int i = 0;
 	char **p;
@@ -113,11 +96,11 @@ void allocate_env(char **args, int argc) {
 	for (p = environ; *p != NULL; p++)
 		bal++;
 	bal += argc - optind + 1;
-	char **newptr = (char*)malloc(2*bal);
-	//str = optarg;
-	//newptr[i] = str;
+	char **newptr = (char**)malloc(2*bal);
 	//printf("%d is\n and %d is \n", optind, argc); DEBUG STATEMENT
-	for (i = 2; i < argc; i++) { // removed optind++
+	for (i = 2; i < argc; i++) {
+		if (strchr(args[i], '=') == NULL)
+			continue;
 		newptr[i-2] = args[i];
 		//printf("Current index of newptr is set to: %s\n", newptr[i-2]);
 	}	
