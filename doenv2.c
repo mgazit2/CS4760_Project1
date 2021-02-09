@@ -48,9 +48,9 @@ int main(int argc, char *argv[]){
 	}
 	
 	for (i = 1; i < argc; i++) {
-		if (system(argv[i]) == -1) {
+		if (strchr(argv[i], '=') != NULL || strchr(argv[i], '-') != NULL)
 			continue;
-		}
+		system(argv[i]);
 	}		
 	/*
 	*/

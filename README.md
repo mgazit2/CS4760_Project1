@@ -12,4 +12,11 @@ PURPOSE:
 	The purpose of this project is to replicate a select number of functions of the env(1) user command
 
 	doenv - run a program in a modified environment
-									
+
+COMMENTS:
+
+	strtok(3) and strchr(3) are both powerful & useful functions that significantly improved quality of output
+	
+	I'm not entirely sure if my way for going about showing the environment is correct, as getenv was not used.
+		- Rather, a more roundabout way was used where the environ extern was called and printed out line by
+		line.								
